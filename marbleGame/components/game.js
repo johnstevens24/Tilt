@@ -1,22 +1,30 @@
 
-import { StyleSheet, Text, View, Button, Animated} from 'react-native';
+import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity} from 'react-native';
 import { useState, useEffect, Component } from 'react';
 import { Accelerometer } from 'expo-sensors';
 
+
 const Game = () =>  {
   const[{x,y,z}, setAccelerometerData] = useState({x:0, y:0, z:0})
-  const [gameLayout, setGameLayout] = useState({ width: 0, height: 0 });
-  const[angle, setAngle] = useState("unkown")
-  const[ballX, setBallX] = useState(0)
-  const[ballY, setBallY] = useState(0)
-  const margin = 0.03
-  const scale = 50
-  const ballRadius = 50
+  const width = Dimensions.get('window').width/2 - 25; //25 for the radius of the ball
+  const height = Dimensions.get('window').height/2;
+  const [margin, setMargin] = useState(0.03) //the size of the deadzone for the x and y values on the accelerometer
+  const [hardMode, setHardMode] = useState(false)
+  const [scale, setScale] = useState(50)//the x and y values from the accelerometer are multiplied by this
   
-  const onGameLayout = event => {
-    const { width, height } = event.nativeEvent.layout;
-    setGameLayout({ width, height });
-  };
+  useEffect(() => {
+    if(hardMode)
+      {
+        setMargin(0)
+        setScale(100)
+      }
+    else
+      {
+        setMargin(0.03)
+        setScale(50)
+      }
+      
+  }, [hardMode])
 
   useEffect(() => {
     const subscription = Accelerometer.addListener(setAccelerometerData)
@@ -25,56 +33,24 @@ const Game = () =>  {
     return () => subscription.remove()
   },[])
 
-  useEffect(() => {
-    if(y > margin || y < -margin)
-      {
-        setBallY(ballY + y)
-      }
-    if(x > margin || x < -margin)
-      {
-        setBallX(ballX + x)
-      }
-
-    if(y > margin)
-    {
-      if(x > margin)
-        setAngle("Down Right")
-      else
-      if(x < -margin)
-        setAngle("Down Left")
-      else
-        setAngle("Down")
-    }  
-    else
-    if(y < -margin)
-    {
-      if(x > margin)
-        setAngle("Up Right")
-      else
-      if(x < -margin)
-        setAngle("Up Left")
-      else
-        setAngle("Up")
-    }
-    else
-    {
-      if(x > margin)
-        setAngle("Right")
-      else
-      if(x < -margin)
-        setAngle("Left")
-      else
-        setAngle("Flat")
-    }
-  }, [x,y])
-
-  return(<View onLayout={onGameLayout}>
-    {/* <Text>x: {x}</Text>
-    <Text>y: {y}</Text> */}
-    {/* <Text>Tilt angle: {angle}</Text> */}
-    {/* <Text>X: {ballX}</Text>
-    <Text>X: {ballY}</Text> */}
-    <AnimatedBall x={x} y={y} margin={margin} scale={scale} width={160} height={563}/>
+  return(<View style={{flexDirection:'column', width:'100%', height:'100%', justifyContent:'flex-start', alignItems:'center'}}>
+          <View style={{flexDirection: 'row', width:'100%', height:'10%', alignItems:'center', justifyContent:'space-between', borderBottomWidth:'2px', padding:'1%'}}>
+      
+            <View style={{flexDirection: 'row', width:'45%', height:'80%', borderWidth:'1px', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
+              <Text style={{fontSize:24}}>01:00:34</Text>
+            </View>
+            
+            <View style={{flexDirection: 'row', width:'50%', height:'100%', backgroundColor:'white', justifyContent:'space-evenly', alignItems:'center'}}>
+              <TouchableOpacity style={{width:'45%', height:'70%', backgroundColor:'#c4c4c4', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
+                <Text>Start</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {hardMode ? setHardMode(false) : setHardMode(true)}} style={{width:'45%', height:'70%', backgroundColor: hardMode ? '#d62727' : '#c4c4c4', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
+                <Text>Hard Mode</Text>
+              </TouchableOpacity>
+            </View>
+            
+          </View>
+          <AnimatedBall x={x} y={y} margin={margin} scale={scale} width={width} height={height}/>
     </View>)
 }
 
@@ -129,36 +105,6 @@ class AnimatedBall extends Component {
           newY = height
           this.yVelocity=0
         }
-          
-      
-      // if(x < -margin || x > margin)
-      // {
-      //   if(!(newX + x*scale < -width) && !(newX + x*scale > width))
-      //     newX += x*scale;
-      //   else
-      //     {
-      //       //place it at the very edge
-      //       if(this.position.x._value < 0)
-      //         newX = -width + 25
-      //     }
-      // }
-
-      // if(y < -margin || y > margin)
-      // {
-      //   if(!(newY + -y*scale < -height) && !(newY + -y*scale > height))
-      //     newY += -y*scale;
-      //   else
-      //     {
-      //       //place it at the very edge
-      //     }
-      // }
-        
-
-      // Check boundaries
-      // if (newX > 1 - margin) newX = 1 - margin;
-      // if (newX < -1 + margin) newX = -1 + margin;
-      // if (newY > 1 - margin) newY = 1 - margin;
-      // if (newY < -1 + margin) newY = -1 + margin;
 
       Animated.spring(this.position, {
         toValue: { x: newX, y: newY },
