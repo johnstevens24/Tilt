@@ -5,16 +5,18 @@ import { Accelerometer } from 'expo-sensors';
 
 const Game = () =>  {
   const[{x,y,z}, setAccelerometerData] = useState({x:0, y:0, z:0})
+  const [gameLayout, setGameLayout] = useState({ width: 0, height: 0 });
   const[angle, setAngle] = useState("unkown")
   const[ballX, setBallX] = useState(0)
   const[ballY, setBallY] = useState(0)
   const margin = 0.03
-  const scale = 100
-  const width = 200
-  const height = 500
+  const scale = 50
   const ballRadius = 50
   
-  
+  const onGameLayout = event => {
+    const { width, height } = event.nativeEvent.layout;
+    setGameLayout({ width, height });
+  };
 
   useEffect(() => {
     const subscription = Accelerometer.addListener(setAccelerometerData)
@@ -66,13 +68,13 @@ const Game = () =>  {
     }
   }, [x,y])
 
-  return(<View>
+  return(<View onLayout={onGameLayout}>
     {/* <Text>x: {x}</Text>
     <Text>y: {y}</Text> */}
     {/* <Text>Tilt angle: {angle}</Text> */}
     {/* <Text>X: {ballX}</Text>
     <Text>X: {ballY}</Text> */}
-    <AnimatedBall x={x} y={y} margin={margin} scale={scale} width={width} height={height}/>
+    <AnimatedBall x={x} y={y} margin={margin} scale={scale} width={160} height={563}/>
     </View>)
 }
 
@@ -103,6 +105,31 @@ class AnimatedBall extends Component {
 
       let newX = this.position.x._value + this.xVelocity
       let newY = this.position.y._value + this.yVelocity
+
+      if(newX > width)
+        {
+          newX = width
+          this.xVelocity=0
+        }
+      else
+      if(newX < -width)
+        {
+          newX = -width
+          this.xVelocity=0
+        }
+      
+      if(newY < 0)
+        {
+          newY = 0
+          this.yVelocity=0
+        }
+      else
+      if(newY > height)
+        {
+          newY = height
+          this.yVelocity=0
+        }
+          
       
       // if(x < -margin || x > margin)
       // {
