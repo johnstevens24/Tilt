@@ -81,38 +81,50 @@ export default Game;
 
 
 class AnimatedBall extends Component {
+  
   constructor(props) {
     super(props);
     this.position = new Animated.ValueXY({ x: 0, y: 0 });
+    this.xVelocity = 0;
+    this.yVelocity = 0;
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.x !== this.props.x || prevProps.y !== this.props.y) {
       const { x, y, margin, scale, width, height } = this.props;
+      if(x > margin || x < -margin)
+          this.xVelocity += x*scale
+      else
+        this.xVelocity = this.xVelocity*.90
+      if(y > margin || y < -margin)
+        this.yVelocity += -y*scale
+      else
+        this.yVelocity = this.yVelocity*.90
 
-      let newX = this.position.x._value 
-      let newY = this.position.y._value
-      if(x < -margin || x > margin)
-      {
-        if(!(newX + x*scale < -width) && !(newX + x*scale > width))
-          newX += x*scale;
-        else
-          {
-            //place it at the very edge
-            if(this.position.x._value < 0)
-              newX = -width + 25
-          }
-      }
+      let newX = this.position.x._value + this.xVelocity
+      let newY = this.position.y._value + this.yVelocity
+      
+      // if(x < -margin || x > margin)
+      // {
+      //   if(!(newX + x*scale < -width) && !(newX + x*scale > width))
+      //     newX += x*scale;
+      //   else
+      //     {
+      //       //place it at the very edge
+      //       if(this.position.x._value < 0)
+      //         newX = -width + 25
+      //     }
+      // }
 
-      if(y < -margin || y > margin)
-      {
-        if(!(newY + -y*scale < -height) && !(newY + -y*scale > height))
-          newY += -y*scale;
-        else
-          {
-            //place it at the very edge
-          }
-      }
+      // if(y < -margin || y > margin)
+      // {
+      //   if(!(newY + -y*scale < -height) && !(newY + -y*scale > height))
+      //     newY += -y*scale;
+      //   else
+      //     {
+      //       //place it at the very edge
+      //     }
+      // }
         
 
       // Check boundaries
