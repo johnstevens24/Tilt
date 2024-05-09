@@ -48,9 +48,9 @@ class Map1 extends Component {
 
     return (
       <View>
-        {/* {this.rectangles.map((rect, index) => (
+        {this.rectangles.map((rect, index) => (
           <View key={index} style={{ position: 'absolute', left: rect.left+3, top: rect.top+3, width: rect.width+3, height: rect.height+3, backgroundColor:'#c9c9c9'}} />
-        ))} */}
+        ))}
         {this.rectangles.map((rect, index) => (
           <View key={index} style={{ position: 'absolute', left: rect.left, top: rect.top, width: rect.width, height: rect.height, backgroundColor: 'grey' }} />
         ))}
