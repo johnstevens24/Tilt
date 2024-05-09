@@ -9,7 +9,7 @@ const Stack = createNativeStackNavigator();
 function App() {
   return (
     <NavigationContainer independent={true}>
-      <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false, gestureEnabled: false  }}>
+      <Stack.Navigator initialRouteName="Game" screenOptions={{ headerShown: false, gestureEnabled: false  }}>
         <Stack.Screen name="Game" component={Game} />
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
       </Stack.Navigator>

@@ -1,17 +1,19 @@
 
 import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity} from 'react-native';
-import { useState, useEffect, Component } from 'react';
+import { useState, useEffect, useRef, Component } from 'react';
 import { Accelerometer } from 'expo-sensors';
+import Map1 from '../components/map1';
 
 
 export default function Game({navigation}) {
   const[{x,y,z}, setAccelerometerData] = useState({x:0, y:0, z:0})
   const width = Dimensions.get('window').width/2 - 25; //25 for the radius of the ball
-  const height = Dimensions.get('window').height/2;
+  const height = Dimensions.get('window').height*.9-50;
   const [margin, setMargin] = useState(0.03) //the size of the deadzone for the x and y values on the accelerometer
   const [hardMode, setHardMode] = useState(false)
   const [scale, setScale] = useState(50)//the x and y values from the accelerometer are multiplied by this
-  
+  const mapRef = useRef(null);
+
   useEffect(() => {
     if(hardMode)
       {
@@ -23,7 +25,6 @@ export default function Game({navigation}) {
         setMargin(0.03)
         setScale(50)
       }
-      
   }, [hardMode])
 
   useEffect(() => {
@@ -33,6 +34,15 @@ export default function Game({navigation}) {
     return () => subscription.remove()
   },[])
 
+  const handleCollision = (x, y) => {
+    if (mapRef.current) {
+      const isCollision = mapRef.current.checkCollision(x, y);
+      if (isCollision) {
+        console.log("collision")
+      }
+    }
+  };
+
   return(<View style={{flexDirection:'column', width:'100%', height:'100%', justifyContent:'flex-start', alignItems:'center'}}>
           <View style={{flexDirection: 'row', width:'100%', height:'10%', alignItems:'center', justifyContent:'space-between', borderBottomWidth:'2px', padding:'1%'}}>
       
@@ -40,7 +50,7 @@ export default function Game({navigation}) {
               <Text style={{fontSize:24}}>01:00:34</Text>
             </View>
             
-            <View style={{flexDirection: 'row', width:'50%', height:'100%', backgroundColor:'white', justifyContent:'space-evenly', alignItems:'center'}}>
+            <View style={{flexDirection: 'row', width:'50%', height:'100%', justifyContent:'space-evenly', alignItems:'center'}}>
               <TouchableOpacity style={{width:'45%', height:'70%', backgroundColor:'#c4c4c4', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
                 <Text>Start</Text>
               </TouchableOpacity>
@@ -50,7 +60,10 @@ export default function Game({navigation}) {
             </View>
             
           </View>
-          <AnimatedBall x={x} y={y} margin={margin} scale={scale} width={width} height={height}/>
+          <Map1 ref={mapRef}/>
+          <AnimatedBall x={x} y={y} margin={margin} scale={scale} width={width} height={height} onCollision={handleCollision}/>
+          
+          
     </View>)
 }
 
@@ -104,6 +117,9 @@ class AnimatedBall extends Component {
           newY = height
           this.yVelocity=0
         }
+      
+      //check collision with map objects
+      this.props.onCollision(newX,newY)
 
       Animated.spring(this.position, {
         toValue: { x: newX, y: newY },
@@ -118,6 +134,8 @@ class AnimatedBall extends Component {
     );
   }
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
