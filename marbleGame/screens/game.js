@@ -1,5 +1,5 @@
 
-import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity, Alert} from 'react-native';
 import { useState, useEffect, useRef, Component } from 'react';
 import { Accelerometer } from 'expo-sensors';
 import Map1 from '../components/map1';
@@ -36,9 +36,9 @@ export default function Game({navigation}) {
 
   const handleCollision = (x, y) => {
     if (mapRef.current) {
-      const isCollision = mapRef.current.checkCollision(x, y);
-      if (isCollision) {
-        console.log("collision")
+      const onPlatform = mapRef.current.checkCollision(x, y);
+      if (onPlatform == false) {
+        Alert.alert("Title","hi?")
       }
     }
   };
