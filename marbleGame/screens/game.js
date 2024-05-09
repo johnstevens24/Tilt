@@ -4,7 +4,7 @@ import { useState, useEffect, Component } from 'react';
 import { Accelerometer } from 'expo-sensors';
 
 
-const Game = () =>  {
+export default function Game({navigation}) {
   const[{x,y,z}, setAccelerometerData] = useState({x:0, y:0, z:0})
   const width = Dimensions.get('window').width/2 - 25; //25 for the radius of the ball
   const height = Dimensions.get('window').height/2;
@@ -15,8 +15,8 @@ const Game = () =>  {
   useEffect(() => {
     if(hardMode)
       {
-        setMargin(0)
-        setScale(100)
+        setMargin(0) //removes deazone
+        setScale(100) //makes the ball accelerate faster
       }
     else
       {
@@ -54,7 +54,6 @@ const Game = () =>  {
     </View>)
 }
 
-export default Game;
 
 
 

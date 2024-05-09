@@ -1,30 +1,20 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import Game from './components/game.js';
-import * as React from "react";
-// import { NavigationContainer } from "@react-navigation/native";
-// import { createStackNavigator } from "@react-navigation/stack";
+import * as React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Game from "./screens/game"
+import SplashScreen from "./screens/splashScreen"
 
+const Stack = createNativeStackNavigator();
 
-
-
-// const Stack = createStackNavigator();
-
-export default function App() {
+function App() {
   return (
-    <View style={styles.container}>
-      <Game style={{width:'100%', height:'90%'}}/> 
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer independent={true}>
+      <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false, gestureEnabled: false  }}>
+        <Stack.Screen name="Game" component={Game} />
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-});
+export default App;
