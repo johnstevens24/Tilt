@@ -44,8 +44,20 @@ export default function Game({navigation}) {
 
   const handleCollision = (x, y) => {
     if (mapRef.current) {
-      const onPlatform = mapRef.current.checkCollision(x, y);
-      if (onPlatform == false) {
+      const onPlatform = mapRef.current.checkCollision(x, y)
+      const finished = mapRef.current.checkFinish(x, y)
+
+      if(finished)
+      {
+        setPause(true)
+        stopwatchRef.current.stop()
+        setStartButtonText("Reset")
+        Alert.alert("You made it to the end, nice!")
+        setStarted(false)
+      }
+
+      if (!onPlatform) 
+      {
         setPause(true)
         stopwatchRef.current.stop()
         setStartButtonText("Reset")
@@ -112,15 +124,16 @@ export default function Game({navigation}) {
 class AnimatedBall extends Component {
   
   constructor(props) {
-    super(props);
-    this.position = new Animated.ValueXY({ x: 0, y: 0 });
-    this.xVelocity = 0;
-    this.yVelocity = 0;
+    super(props)
+    this.position = new Animated.ValueXY({ x: 0, y: 0 })
+    this.xVelocity = 0
+    this.yVelocity = 0
   }
 
   reset() {
     this.position = new Animated.ValueXY({ x: 0, y: 0 });
-    console.log("ball resetting")
+    this.xVelocity = 0
+    this.yVelocity = 0
   }
 
   componentDidUpdate(prevProps) {

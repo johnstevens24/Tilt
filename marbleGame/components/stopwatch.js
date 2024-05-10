@@ -3,26 +3,19 @@ import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity,
 
 const Stopwatch = forwardRef((props, ref) => {
     const [time, setTime] = useState(0)
-    const [stopTimer, setStopTimer] = useState(false)
+    const timerRef = useRef(null)
     
     useEffect(() => {
-        if(!stopTimer && time!=0)
-            setTimeout(() => {
-                if(!stopTimer)
-                    setTime(time+1)
-            }, 1000);
+        if(time!=0)
+            timerRef.current = setTimeout(() => { setTime(time+1) }, 1000);
     }, [time])
 
-
     const start = () => {
-        setTimeout(() => {
-            if(!stopTimer)
-                setTime(1)
-          }, 1000);
+        timerRef.current = setTimeout(() => { setTime(time+1) }, 1000);
     }
 
     const stop = () => {
-        setStopTimer(true)
+        clearTimeout(timerRef.current);
     }
 
     //gets the current time of the stopwatch
@@ -32,7 +25,6 @@ const Stopwatch = forwardRef((props, ref) => {
 
     const reset = () => {
         setTime(0)
-        setStopTimer(false)
     }
 
     useImperativeHandle(ref, () => ({
@@ -43,7 +35,7 @@ const Stopwatch = forwardRef((props, ref) => {
     }));
     
     return(
-        <Text>{time} s</Text>
+        <Text>{time > 60 ? parseInt(time/60) + "m " + time%60 + "s" : time + "s"}</Text>
     )
     
 })

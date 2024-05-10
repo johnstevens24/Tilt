@@ -25,8 +25,10 @@ class Map1 extends Component {
         { left: -187*widthMultiplier, top: 405*heightMultiplier, width: 100*widthMultiplier, height: 60*heightMultiplier},
         { left: -187*widthMultiplier, top: 465*heightMultiplier, width: 60*widthMultiplier, height: 120*heightMultiplier},
         { left: -187*widthMultiplier, top: 525*heightMultiplier, width: 340*widthMultiplier, height: 60*heightMultiplier},
-        { left: 93*widthMultiplier, top: 465*heightMultiplier, width: 60*widthMultiplier, height: 60*heightMultiplier},
+        {left: 93*widthMultiplier, top: 465*heightMultiplier, width: 60*widthMultiplier, height: 60*heightMultiplier}, //a duplicate of the finish tile needs to be in here so that it can properly draw the shadow and not overlap onto anything
       ];
+
+      this.finishTile = {left: 93*widthMultiplier, top: 465*heightMultiplier, width: 60*widthMultiplier, height: 60*heightMultiplier}
 
     }
 
@@ -44,6 +46,14 @@ class Map1 extends Component {
     return false;
   }
 
+  checkFinish(x, y) {
+    y=y+25
+    if (x >= this.finishTile.left && x <= this.finishTile.left + this.finishTile.width && y >= this.finishTile.top && y <= this.finishTile.top + this.finishTile.height) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
 
     return (
@@ -54,6 +64,8 @@ class Map1 extends Component {
         {this.rectangles.map((rect, index) => (
           <View key={index} style={{ position: 'absolute', left: rect.left, top: rect.top, width: rect.width, height: rect.height, backgroundColor: 'grey' }} />
         ))}
+        
+        <View style={{ position: 'absolute', left: this.finishTile.left, top: this.finishTile.top, width: this.finishTile.width, height: this.finishTile.height, backgroundColor: 'green' }}></View>
       </View>
     );
   }
