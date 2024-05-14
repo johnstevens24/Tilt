@@ -52,17 +52,20 @@ export default function Game({navigation}) {
         setPause(true)
         stopwatchRef.current.stop()
         setStartButtonText("Reset")
-        Alert.alert("You made it to the end, nice!")
+        // Alert.alert("You made it to the end, nice!")
         setStarted(false)
+        setTimeout(() => {
+          navigation.navigate("ScoreScreen", {time: stopwatchRef.current.getTime()})
+        }, 1000);
       }
 
       if (!onPlatform) 
       {
-        setPause(true)
-        stopwatchRef.current.stop()
-        setStartButtonText("Reset")
-        Alert.alert("Womp womp you lost")
-        setStarted(false)
+        // setPause(true)
+        // stopwatchRef.current.stop()
+        // setStartButtonText("Reset")
+        // Alert.alert("Womp womp you lost")
+        // setStarted(false)
       }
     }
   };
