@@ -1,13 +1,12 @@
 import { useState, useEffect, Component } from 'react';
 import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity} from 'react-native';
-import { BlurView } from 'expo-blur';
 
 
-class Map1 extends Component {
+class Map extends Component {
   constructor(props) {
       super(props);
-      //needed to calculate maps that will be proportional across different sized devices. If you calculate with percentages, things appear fine but collisions won't be detected.
-      //this app was developed on a screen that is 
+      // //needed to calculate maps that will be proportional across different sized devices. If you calculate with percentages, things appear fine but collisions won't be detected.
+      // //this app was developed on a screen that is 
       widthMultiplier = Dimensions.get('window').width/375
       heightMultiplier = Dimensions.get('window').height/667
       // hOffset = .9 //this is used to take into account the 10 percent of the screen that is covered by the top bar
@@ -32,28 +31,6 @@ class Map1 extends Component {
 
     }
 
-  checkCollision(x, y) {
-    //the ball's "center" is actuall at the very top of the ball. This recenters it for collision detection.
-    y=y+25
-    for (let i = 0; i < this.rectangles.length; i++) {
-      const rect = this.rectangles[i];
-      if (x >= rect.left && x <= rect.left + rect.width && y >= rect.top && y <= rect.top + rect.height) {
-        // Collision detected, return true
-        return true;
-      }
-    }
-    // No collision detected, return false
-    return false;
-  }
-
-  checkFinish(x, y) {
-    y=y+25
-    if (x >= this.finishTile.left && x <= this.finishTile.left + this.finishTile.width && y >= this.finishTile.top && y <= this.finishTile.top + this.finishTile.height) {
-      return true;
-    }
-    return false;
-  }
-
   render() {
 
     return (
@@ -71,4 +48,4 @@ class Map1 extends Component {
   }
 }
 
-export default Map1
+export default Map

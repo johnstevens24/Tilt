@@ -2,12 +2,15 @@
 import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity, Alert} from 'react-native';
 import { useState, useEffect, useRef, Component } from 'react';
 import { Accelerometer } from 'expo-sensors';
-import Map1 from '../components/map1';
+import Map from '../components/map';
 import Stopwatch from '../components/stopwatch';
+import AnimatedBall from '../components/ball';
 
 
-export default function Game({navigation}) {
-  const[{x,y,z}, setAccelerometerData] = useState({x:0, y:0, z:0})
+export default function Game({navigation, route}) {
+  const{map} = route.params
+
+  const [{x,y,z}, setAccelerometerData] = useState({x:0, y:0, z:0})
   const width = Dimensions.get('window').width/2 - 25; //25 for the radius of the ball
   const height = Dimensions.get('window').height*.9-50;
   const [margin, setMargin] = useState(0.03) //the size of the deadzone for the x and y values on the accelerometer
@@ -44,28 +47,42 @@ export default function Game({navigation}) {
 
   const handleCollision = (x, y) => {
     if (mapRef.current) {
-      const onPlatform = mapRef.current.checkCollision(x, y)
-      const finished = mapRef.current.checkFinish(x, y)
+      //the ball's "center" is actuall at the very top of the ball. This recenters it for collision detection.
+      y=y+25
+      var onPlatform = false;
 
-      if(finished)
+      //check if the ball is still on the track
+      for (let i = 0; i < mapRef.current.rectangles.length; i++) {
+        const rect = mapRef.current.rectangles[i];
+        if (x >= rect.left && x <= rect.left + rect.width && y >= rect.top && y <= rect.top + rect.height) {
+          onPlatform = true;
+          break;
+        }
+      }
+
+      //if it isn't
+      if (!onPlatform) 
       {
         setPause(true)
         stopwatchRef.current.stop()
         setStartButtonText("Reset")
-        // Alert.alert("You made it to the end, nice!")
+        Alert.alert("Womp womp you lost")
         setStarted(false)
+        return
+      }
+
+      //check if the ball has made it to the end
+      if (x >= mapRef.current.finishTile.left && x <= mapRef.current.finishTile.left + mapRef.current.finishTile.width && y >= mapRef.current.finishTile.top && y <= mapRef.current.finishTile.top + mapRef.current.finishTile.height) {
+        //stop the ball
+        setPause(true)
+        stopwatchRef.current.stop()
+        setStartButtonText("Reset")
+        setStarted(false)
+
+        //in a second, navigate to the new screen
         setTimeout(() => {
           navigation.navigate("ScoreScreen", {time: stopwatchRef.current.getTime()})
         }, 1000);
-      }
-
-      if (!onPlatform) 
-      {
-        // setPause(true)
-        // stopwatchRef.current.stop()
-        // setStartButtonText("Reset")
-        // Alert.alert("Womp womp you lost")
-        // setStarted(false)
       }
     }
   };
@@ -114,100 +131,9 @@ export default function Game({navigation}) {
             </View>
             
           </View>
-          <Map1 ref={mapRef}/>
+          <Map ref={mapRef}/>
           <AnimatedBall ref={ballRef} pause={pause} x={x} y={y} margin={margin} scale={scale} width={width} height={height} onCollision={handleCollision}/>
           <Text style={{ position: 'absolute', left: Dimensions.get('window').width/2, top: Dimensions.get('window').height/2, fontSize:40}}>{startText}</Text>
           
     </View>)
 }
-
-
-
-
-class AnimatedBall extends Component {
-  
-  constructor(props) {
-    super(props)
-    this.position = new Animated.ValueXY({ x: 0, y: 0 })
-    this.xVelocity = 0
-    this.yVelocity = 0
-  }
-
-  reset() {
-    this.position = new Animated.ValueXY({ x: 0, y: 0 });
-    this.xVelocity = 0
-    this.yVelocity = 0
-  }
-
-  componentDidUpdate(prevProps) {
-    if(this.props.pause == false)
-      if (prevProps.x !== this.props.x || prevProps.y !== this.props.y) {
-        const { x, y, margin, scale, width, height } = this.props;
-        if(x > margin || x < -margin)
-            this.xVelocity += x*scale
-        else
-          this.xVelocity = this.xVelocity*.90
-        if(y > margin || y < -margin)
-          this.yVelocity += -y*scale
-        else
-          this.yVelocity = this.yVelocity*.90
-
-        let newX = this.position.x._value + this.xVelocity
-        let newY = this.position.y._value + this.yVelocity
-
-        if(newX > width)
-          {
-            newX = width
-            this.xVelocity=0
-          }
-        else
-        if(newX < -width)
-          {
-            newX = -width
-            this.xVelocity=0
-          }
-        
-        if(newY < 0)
-          {
-            newY = 0
-            this.yVelocity=0
-          }
-        else
-        if(newY > height)
-          {
-            newY = height
-            this.yVelocity=0
-          }
-        
-        //check collision with map objects
-        this.props.onCollision(newX,newY)
-
-        Animated.spring(this.position, {
-          toValue: { x: newX, y: newY },
-          useNativeDriver: false,
-        }).start();
-      }
-  }
-
-  render() {
-    return (
-      <Animated.View style={[styles.ball, this.position.getLayout()]} />
-    );
-  }
-}
-
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  ball: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'red',
-  },
-});

@@ -5,7 +5,7 @@ export default function SplashScreen({navigation}) {
     return(
         <View>
             <Text>Hi!</Text>
-            <Button title="go to game" onPress={() => {navigation.navigate("Game")}}></Button>
+            <Button title="go to game" onPress={() => {navigation.navigate("SelectMap")}}></Button>
         </View>
     )
 }

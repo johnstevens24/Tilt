@@ -4,16 +4,18 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Game from "./screens/game"
 import SplashScreen from "./screens/splashScreen"
 import ScoreScreen from "./screens/scoreScreen"
+import SelectMap from './screens/selectMap';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
   return (
     <NavigationContainer independent={true}>
-      <Stack.Navigator initialRouteName="Game" screenOptions={{ headerShown: false, gestureEnabled: false  }}>
+      <Stack.Navigator initialRouteName="SelectScreen" screenOptions={{ headerShown: false, gestureEnabled: false  }}>
         <Stack.Screen name="Game" component={Game} />
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="ScoreScreen" component={ScoreScreen} />
+        <Stack.Screen name="SelectScreen" component={SelectMap} />
       </Stack.Navigator>
     </NavigationContainer>
   );
