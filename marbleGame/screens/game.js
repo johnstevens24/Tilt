@@ -1,15 +1,15 @@
 
-import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity, Alert} from 'react-native';
+import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity, Alert, SafeAreaView} from 'react-native';
 import { useState, useEffect, useRef, Component } from 'react';
 import { Accelerometer } from 'expo-sensors';
-import Map from '../components/map';
+import Map1 from '../components/maps/map1';
+import Map2 from '../components/maps/map2';
 import Stopwatch from '../components/stopwatch';
 import AnimatedBall from '../components/ball';
 
 
 export default function Game({navigation, route}) {
-  const{map} = route.params
-
+  const{mapID} = route.params
   const [{x,y,z}, setAccelerometerData] = useState({x:0, y:0, z:0})
   const width = Dimensions.get('window').width/2 - 25; //25 for the radius of the ball
   const height = Dimensions.get('window').height*.9-50;
@@ -41,6 +41,7 @@ export default function Game({navigation, route}) {
   useEffect(() => {
     const subscription = Accelerometer.addListener(setAccelerometerData)
     Accelerometer.setUpdateInterval(100)
+    console.log(mapID)
     //removes subscription when component unmounts. No need to listen needlessly
     return () => subscription.remove()
   },[])
@@ -114,7 +115,8 @@ export default function Game({navigation, route}) {
     
   }
 
-  return(<View style={{flexDirection:'column', width:'100%', height:'100%', justifyContent:'flex-start', alignItems:'center'}}>
+  return(
+        <SafeAreaView style={{flexDirection:'column', width:'100%', height:'100%', justifyContent:'flex-start', alignItems:'center'}}>
           <View style={{flexDirection: 'row', width:'100%', height:'10%', alignItems:'center', justifyContent:'space-between', borderBottomWidth:'2px', padding:'1%'}}>
       
             <View style={{flexDirection: 'row', width:'45%', height:'80%', borderWidth:'1px', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
@@ -131,9 +133,10 @@ export default function Game({navigation, route}) {
             </View>
             
           </View>
-          <Map ref={mapRef}/>
-          <AnimatedBall ref={ballRef} pause={pause} x={x} y={y} margin={margin} scale={scale} width={width} height={height} onCollision={handleCollision}/>
-          <Text style={{ position: 'absolute', left: Dimensions.get('window').width/2, top: Dimensions.get('window').height/2, fontSize:40}}>{startText}</Text>
+          {mapID == 2 ? <Map2 ref={mapRef}/> : <Map1 ref={mapRef}/>}
           
-    </View>)
+          <AnimatedBall ref={ballRef} pause={pause} x={x} y={y} margin={margin} scale={scale} width={width} height={height} onCollision={handleCollision}/>
+          <Text style={{ position: 'absolute', left: Dimensions.get('window').width/2, top: Dimensions.get('window').height/2, fontSize:40}}>{startText}</Text>  
+        </SafeAreaView>
+    )
 }
