@@ -8,11 +8,11 @@ export default function SelectMap({navigation}) {
 
     return(
         <View style={{flexDirection:'column', width:'100%', height:'100%'}}>
-            <ScrollView style={{flexDirection:'column', width:'100%', height:'100%'}}>
-                {
-                    mapIDs.map((id) => (<MapTile key={id} navigation={navigation} id={id}/>))
-                }
-                
+            <View style={{flexDirection:'row', width:'100%', height:'15%', backgroundColor:'#a9a9a9', justifyContent:'center', alignItems:'center'}}>
+                <Text style={{fontSize:50, fontWeight:'700', color:'white'}}>LEVELS</Text>
+            </View>
+            <ScrollView style={{flex:1, flexDirection:'column', width:'100%'}}>
+                {mapIDs.map((id) => (<MapTile key={id} navigation={navigation} id={id}/>))}
             </ScrollView>
         </View>
     )
@@ -21,14 +21,12 @@ export default function SelectMap({navigation}) {
 
 
 class MapTile extends Component {
-    
+
+    thumbnails = [require('../src/mapThumbnails/map1.jpg'), require('../src/mapThumbnails/map2.jpg')]
+
     constructor(props) {
         super(props);
         this.id = props.id;
-        const temp = parseInt(this.id);
-        console.log(temp);
-        // Constructing the image path
-        // this.image = require(`../src/mapThumbnails/map${temp}.jpg`);
     }
 
     render() {
@@ -37,7 +35,7 @@ class MapTile extends Component {
         return (
             <TouchableOpacity onPress={() => {navigation.navigate("Game", {mapID: this.id})}}>
                 <View style={{width:'90%', aspectRatio:1, margin:'5%', backgroundColor:'grey', alignItems:'center', justifyContent:'center'}}>
-                    <Image style={{width:'100%', height:'100%', aspectRatio:1}} source={this.image} />
+                    <Image style={{width:'100%', height:'100%', aspectRatio:1}} source={this.thumbnails[this.id-1]} />
                     <Text style={{fontSize:70, 
                         color:'white', 
                         shadowColor:'black', 

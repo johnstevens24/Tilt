@@ -41,7 +41,6 @@ export default function Game({navigation, route}) {
   useEffect(() => {
     const subscription = Accelerometer.addListener(setAccelerometerData)
     Accelerometer.setUpdateInterval(100)
-    console.log(mapID)
     //removes subscription when component unmounts. No need to listen needlessly
     return () => subscription.remove()
   },[])
@@ -117,18 +116,26 @@ export default function Game({navigation, route}) {
 
   return(
         <SafeAreaView style={{flexDirection:'column', width:'100%', height:'100%', justifyContent:'flex-start', alignItems:'center'}}>
+
+          {/* top row */}
           <View style={{flexDirection: 'row', width:'100%', height:'10%', alignItems:'center', justifyContent:'space-between', borderBottomWidth:'2px', padding:'1%'}}>
-      
-            <View style={{flexDirection: 'row', width:'45%', height:'80%', borderWidth:'1px', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
+            {/* stopwatch */}
+            <View style={{flexDirection: 'row', width:'40%', height:'80%', borderWidth:'1px', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
               <Text style={{fontSize:24}}><Stopwatch ref={stopwatchRef}/></Text>
             </View>
-            
-            <View style={{flexDirection: 'row', width:'50%', height:'100%', justifyContent:'space-evenly', alignItems:'center'}}>
-              <TouchableOpacity onPress={() => {start()}} style={{width:'45%', height:'70%', backgroundColor:'#c4c4c4', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
+            {/* button row */}
+            <View style={{flexDirection: 'row', width:'60%', height:'100%', justifyContent:'space-evenly', alignItems:'center'}}>
+              {/* start button */}
+              <TouchableOpacity onPress={() => {start()}} style={{width:'30%', height:'70%', backgroundColor:'#a9a9a9', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
                 <Text>{startButtonText}</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {hardMode ? setHardMode(false) : setHardMode(true)}} style={{width:'45%', height:'70%', backgroundColor: hardMode ? '#d62727' : '#c4c4c4', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
+              {/* hard mode button */}
+              <TouchableOpacity onPress={() => {hardMode ? setHardMode(false) : setHardMode(true)}} style={{width:'30%', height:'70%', backgroundColor: hardMode ? '#d62727' : '#a9a9a9', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
                 <Text>Hard Mode</Text>
+              </TouchableOpacity>
+              {/* back button */}
+              <TouchableOpacity onPress={() => {navigation.goBack()}} style={{width:'30%', height:'70%', backgroundColor: '#a9a9a9', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
+                <Text>Back</Text>
               </TouchableOpacity>
             </View>
             

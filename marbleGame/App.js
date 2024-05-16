@@ -1,12 +1,15 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { StatusBar } from 'react-native';
 import Game from "./screens/game"
 import SplashScreen from "./screens/splashScreen"
 import ScoreScreen from "./screens/scoreScreen"
 import SelectMap from './screens/selectMap';
 
 const Stack = createNativeStackNavigator();
+// Change status bar color
+StatusBar.setBarStyle('dark-content');
 
 function App() {
   return (
