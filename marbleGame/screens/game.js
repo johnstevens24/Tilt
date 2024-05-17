@@ -19,9 +19,8 @@ export default function Game({navigation, route}) {
   const [pause, setPause] = useState(true)
   const [scale, setScale] = useState(50)//the x and y values from the accelerometer are multiplied by this
   const [startText, setStartText] = useState("")
-  const [startButtonText, setStartButtonText] = useState("Start")
   const [started, setStarted] = useState(false)
-
+  const [gameOver, setGameOver] = useState(false)
   const mapRef = useRef(null)
   const ballRef = useRef(null)
   const stopwatchRef = useRef(null)
@@ -66,8 +65,7 @@ export default function Game({navigation, route}) {
       {
         setPause(true)
         stopwatchRef.current.stop()
-        setStartButtonText("Reset")
-        Alert.alert("Womp womp you lost")
+        setGameOver(true)
         setStarted(false)
         return
       }
@@ -77,7 +75,6 @@ export default function Game({navigation, route}) {
         //stop the ball
         setPause(true)
         stopwatchRef.current.stop()
-        setStartButtonText("Reset")
         setStarted(false)
 
         //in a second, navigate to the new screen
@@ -92,8 +89,8 @@ export default function Game({navigation, route}) {
     if(!started)
       {
         setStarted(true)
-        stopwatchRef.current.reset()
-        ballRef.current.reset()
+        // stopwatchRef.current.reset()
+        // ballRef.current.reset()
 
         setStartText(3)
         setTimeout(() => {
@@ -112,7 +109,13 @@ export default function Game({navigation, route}) {
         }, 4000);
       }
     
-    
+  }
+
+  const tryAgain = () => {
+    setGameOver(false)
+    setStarted(false)
+    stopwatchRef.current.reset()
+    ballRef.current.reset()
   }
 
   return(
@@ -128,7 +131,7 @@ export default function Game({navigation, route}) {
             <View style={{flexDirection: 'row', width:'60%', height:'100%', justifyContent:'space-evenly', alignItems:'center'}}>
               {/* start button */}
               <TouchableOpacity onPress={() => {start()}} style={{width:'30%', height:'70%', backgroundColor:'#a9a9a9', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
-                <Text>{startButtonText}</Text>
+                <Text>Start</Text>
               </TouchableOpacity>
               {/* hard mode button */}
               <TouchableOpacity onPress={() => {hardMode ? setHardMode(false) : setHardMode(true)}} style={{width:'30%', height:'70%', backgroundColor: hardMode ? '#d62727' : '#a9a9a9', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
@@ -141,6 +144,29 @@ export default function Game({navigation, route}) {
             </View>
             
           </View>
+          
+          {gameOver ? 
+            <View style={Styles.GameOverBox}>
+              {/* Game over message */}
+              <View>
+                <Text style={{fontSize:30, color:'white'}}>You Lost</Text>
+              </View>
+              {/* Game over buttons */}
+              <View style={{height:'40%', flexDirection:'row', justifyContent:'flex-start', alignItems:'center'}}>
+                <TouchableOpacity style={Styles.GameOverButton} onPress={() => {}}>
+                  <Text>Exit</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={Styles.GameOverButton} onPress={() => {tryAgain()}}>
+                  <Text>Try Again</Text>
+                </TouchableOpacity>
+              </View>
+
+            </View>
+            : 
+            <View/>
+          }
+                   
           {mapID == 2 ? <Map2 ref={mapRef}/> : <Map1 ref={mapRef}/>}
           
           <AnimatedBall ref={ballRef} pause={pause} x={x} y={y} margin={margin} scale={scale} width={width} height={height} onCollision={handleCollision}/>
