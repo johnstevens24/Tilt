@@ -2,6 +2,7 @@
 import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity, Alert, SafeAreaView} from 'react-native';
 import { useState, useEffect, useRef, Component } from 'react';
 import { Accelerometer } from 'expo-sensors';
+import Styles from "../styleSheets/gameScreen";
 import Map1 from '../components/maps/map1';
 import Map2 from '../components/maps/map2';
 import Stopwatch from '../components/stopwatch';
@@ -118,9 +119,9 @@ export default function Game({navigation, route}) {
         <SafeAreaView style={{flexDirection:'column', width:'100%', height:'100%', justifyContent:'flex-start', alignItems:'center'}}>
 
           {/* top row */}
-          <View style={{flexDirection: 'row', width:'100%', height:'10%', alignItems:'center', justifyContent:'space-between', borderBottomWidth:'2px', padding:'1%'}}>
+          <View style={Styles.Banner}>
             {/* stopwatch */}
-            <View style={{flexDirection: 'row', width:'40%', height:'80%', borderWidth:'1px', borderRadius:5, justifyContent:'center', alignItems:'center'}}>
+            <View style={Styles.StopWatch}>
               <Text style={{fontSize:24}}><Stopwatch ref={stopwatchRef}/></Text>
             </View>
             {/* button row */}

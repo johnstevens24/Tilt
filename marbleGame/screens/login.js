@@ -19,14 +19,14 @@ export default function Login({navigation}) {
             <View style={{flex:3}}></View>
             <View style={Styles.LoginBox}>
                 <Text style={Styles.Title}>TILT</Text>
-                <TextInput value={username} onChangeText={setUsername} defaultValue='username' style={Styles.TextInput}></TextInput>
-                <TextInput value={password} onChangeText={setPassword} defaultValue='password' style={Styles.TextInput}></TextInput>
+                <TextInput value={username} onChangeText={setUsername} placeholder='username' style={Styles.TextInput}></TextInput>
+                <TextInput value={password} onChangeText={setPassword} placeholder='password' secureTextEntry={true} style={Styles.TextInput}></TextInput>
                 <TouchableOpacity style={Styles.LoginButton} onPress={() => {login()}}>
                     <Text style={Styles.LoginButtonText}>Log In</Text>
                 </TouchableOpacity>
                 <View style={{width:'100%', marginVertical:'10%', borderTopWidth:1}}/>
                 <Text style={{fontSize:18}}>or</Text>
-                <TouchableOpacity style={Styles.CreateAccount}>
+                <TouchableOpacity style={Styles.CreateAccount} onPress={() => {navigation.navigate("CreateUserScreen")}}>
                     <Text style={{color:'gray'}}>Create an Account</Text>
                 </TouchableOpacity>
             </View>

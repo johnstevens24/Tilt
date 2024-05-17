@@ -1,13 +1,15 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-    LoginBox: {flexDirection:'column', 
-    width:'60%', 
-    height:'60%', 
-    justifyContent:'flex-start', 
-    alignItems:'center', 
-    padding:'4%',
-    borderWidth:'1px'},
+    CreateUserBox: {
+        flexDirection:'column', 
+        width:'60%', 
+        height:'70%', 
+        justifyContent:'flex-start', 
+        alignItems:'center', 
+        padding:'4%',
+        borderWidth:'1px'
+    },
 
     TextInput: {
         width:'100%',
@@ -23,7 +25,7 @@ export default StyleSheet.create({
         marginBottom:'15%',
     },
 
-    LoginButton: {
+    CreateUserButton: {
         backgroundColor:'#f7162e',
         width:'100%',
         height:'20%',
@@ -33,14 +35,14 @@ export default StyleSheet.create({
         justifyContent:'center'
     },
 
-    LoginButtonText:{
+    CreateUserButtonText:{
         fontSize:24,
         color:'white'
     },
 
-    CreateAccount: {
+    Cancel: {
         marginVertical:'5%',
-        width:'80%',
+        width:'50%',
         height:'10%',
         backgroundColor:'#d9d9d9',
         borderRadius:5,
