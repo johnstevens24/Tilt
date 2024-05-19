@@ -18,6 +18,15 @@ export default StyleSheet.create({
         borderRadius:5, 
         marginBottom:'10%',
     },
+
+    MissingTextInput: {
+        width:'100%',
+        fontSize:24, 
+        borderWidth:'2px', 
+        borderRadius:5, 
+        marginBottom:'10%',
+        borderColor:'red',
+    },
     
     Title:{
         fontSize:40,
