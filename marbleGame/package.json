@@ -23,7 +23,8 @@
     "react-native-sensors": "^7.3.6",
     "react-navigation": "^5.0.0",
     "expo-blur": "~13.0.2",
-    "expo-sqlite": "~14.0.3"
+    "expo-sqlite": "~14.0.3",
+    "@shopify/react-native-skia": "1.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

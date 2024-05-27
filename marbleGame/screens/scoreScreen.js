@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity, Alert, TextInput, ScrollView} from 'react-native';
+import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity, Alert, TextInput, ScrollView, SafeAreaView} from 'react-native';
 import { useState, useEffect, useRef, Component } from 'react';
 import * as SQLite from 'expo-sqlite';
 import style from '../styleSheets/scoreScreen'
@@ -51,18 +51,20 @@ export default function ScoreScreen({route, navigation}) {
     
 
     return(
-        <View style ={{flexDirection:'column', alignItems:'center', justifyContent:'flex-start', height:'100%'}}>
-            <TouchableOpacity onPress={() => navigation.navigate("SelectScreen")} style={style.backButton}>
+        <SafeAreaView style ={{flexDirection:'column', alignItems:'center', justifyContent:'flex-start', height:'100%'}}>
+            {/* <TouchableOpacity onPress={() => navigation.navigate("SelectScreen")} style={style.backButton}>
                 <Text style={style.backButtonText}>BACK</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            <View style={style.Banner}>
+                <Text style={style.Title}>Level 1 Leaderboard</Text>
+            </View>
             
-            <Text style={{fontSize:30}}>Level 1 Leaderboard</Text>
-            <View style={{flexDirection:'column', width:'96%', height:'50%', backgroundColor:'#c9c9c9', borderColor:'gray', borderWidth:'5px', borderRadius:15, margin:'2%', padding:'3%'}}>
+            <View style={style.LeaderBoard}>
                 <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
                     {list == null ? <Text>loading...</Text>: list.map((item, index) => (
                         <View key={index} style={{flexDirection: 'row', justifyContent:'space-between', alignItems:'center'}}>
-                            <Text style={{fontSize:20}}>{item.username}</Text>
-                            <Text style={{fontSize:20}}>{item.time}s</Text>
+                            <Text style={style.LeaderBoardText}>{item.username}</Text>
+                            <Text style={style.LeaderBoardText}>{item.time}s</Text>
                         </View>
                         
                     ))}
@@ -72,6 +74,6 @@ export default function ScoreScreen({route, navigation}) {
             <Text style={{fontSize:20}}>You finished the level in {time} seconds {personalBest ? <Text>THATS A PERSONAL BEST!!</Text>: <Text>... eh</Text>}</Text>
             
             
-        </View>
+        </SafeAreaView>
     )
 }

@@ -3,12 +3,12 @@ import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity,
 import { useState, useEffect, useRef, Component } from 'react';
 import { Accelerometer } from 'expo-sensors';
 import * as SQLite from 'expo-sqlite';
+import { BlurView } from 'expo-blur';
 import Styles from "../styleSheets/gameScreen";
 import Map1 from '../components/maps/map1';
 import Map2 from '../components/maps/map2';
 import Stopwatch from '../components/stopwatch';
 import AnimatedBall from '../components/ball';
-
 
 export default function Game({navigation, route}) {
   const{mapID} = route.params
@@ -158,7 +158,6 @@ export default function Game({navigation, route}) {
 
 return(
         <SafeAreaView style={{flexDirection:'column', width:'100%', height:'100%', justifyContent:'flex-start', alignItems:'center'}}>
-
           {/* top row */}
           <View style={Styles.Banner}>
             {/* stopwatch */}
@@ -204,10 +203,12 @@ return(
             : 
             <View/>
           }
-                   
-          {mapID == 2 ? <Map2 ref={mapRef}/> : <Map1 ref={mapRef}/>}
           
-          <AnimatedBall ref={ballRef} pause={pause} x={x} y={y} margin={margin} scale={scale} width={width} height={height} onCollision={handleCollision}/>
+            {mapID == 2 ? <Map2 ref={mapRef}/> : <Map1 ref={mapRef}/>}
+            <AnimatedBall ref={ballRef} pause={pause} x={x} y={y} margin={margin} scale={scale} width={width} height={height} onCollision={handleCollision}/>
+          
+          
+
           <Text style={{ position: 'absolute', left: Dimensions.get('window').width/2, top: Dimensions.get('window').height/2, fontSize:40}}>{startText}</Text>  
         </SafeAreaView>
     )
