@@ -16,14 +16,26 @@ export default function Login({navigation}) {
     }, [])
 
     async function setUpDB() {
+        console.log("attempt")
         try{
             setDB(await SQLite.openDatabaseAsync('tilt.db'))
             if(db)
                 {
-                    await db.execAsync(`CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, username TEXT, password TEXT)`)
+                    //create the necessary tables
+                    await db.execAsync(`CREATE TABLE IF NOT EXISTS users (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                        email TEXT, 
+                        username TEXT, 
+                        password TEXT)`)
+                    await db.execAsync(`CREATE TABLE IF NOT EXISTS scores (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                        user_id INTEGER, 
+                        map_id INTEGER,
+                        time INTEGER,
+                        FOREIGN KEY(user_id) REFERENCES users(id))`)
                 }
         } catch (error) {
-            console.log("Error: " + error)
+            console.log("There was an error initializing the database: " + error)
         }
     }
 

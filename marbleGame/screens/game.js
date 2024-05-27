@@ -2,6 +2,7 @@
 import { StyleSheet, Text, View, Button, Animated, Dimensions, TouchableOpacity, Alert, SafeAreaView} from 'react-native';
 import { useState, useEffect, useRef, Component } from 'react';
 import { Accelerometer } from 'expo-sensors';
+import * as SQLite from 'expo-sqlite';
 import Styles from "../styleSheets/gameScreen";
 import Map1 from '../components/maps/map1';
 import Map2 from '../components/maps/map2';
@@ -24,6 +25,7 @@ export default function Game({navigation, route}) {
   const mapRef = useRef(null)
   const ballRef = useRef(null)
   const stopwatchRef = useRef(null)
+  const [db, setDB] = useState(null)
 
   useEffect(() => {
     if(hardMode)
@@ -39,6 +41,7 @@ export default function Game({navigation, route}) {
   }, [hardMode])
 
   useEffect(() => {
+    setUpDB()
     const subscription = Accelerometer.addListener(setAccelerometerData)
     Accelerometer.setUpdateInterval(100)
     //removes subscription when component unmounts. No need to listen needlessly
@@ -63,24 +66,16 @@ export default function Game({navigation, route}) {
       //if it isn't
       if (!onPlatform) 
       {
-        setPause(true)
-        stopwatchRef.current.stop()
-        setGameOver(true)
-        setStarted(false)
-        return
+        // setPause(true)
+        // stopwatchRef.current.stop()
+        // setGameOver(true)
+        // setStarted(false)
+        // return
       }
 
       //check if the ball has made it to the end
       if (x >= mapRef.current.finishTile.left && x <= mapRef.current.finishTile.left + mapRef.current.finishTile.width && y >= mapRef.current.finishTile.top && y <= mapRef.current.finishTile.top + mapRef.current.finishTile.height) {
-        //stop the ball
-        setPause(true)
-        stopwatchRef.current.stop()
-        setStarted(false)
-
-        //in a second, navigate to the new screen
-        setTimeout(() => {
-          navigation.navigate("ScoreScreen", {time: stopwatchRef.current.getTime()})
-        }, 1000);
+        mapComplete()
       }
     }
   };
@@ -118,7 +113,50 @@ export default function Game({navigation, route}) {
     ballRef.current.reset()
   }
 
-  return(
+  async function mapComplete() {
+    setPause(true)
+    stopwatchRef.current.stop()
+    setStarted(false)
+    let personalBest = false
+
+    try{
+        //see if the user already has a time for this map
+        const prevTime = await db.getAllAsync('SELECT * FROM scores WHERE scores.user_id = $1', [globalThis.id]);
+
+        if(prevTime.length === 0)
+        {
+          //add a time for the user since its the first time they've finished this map
+          await db.runAsync("INSERT INTO scores (user_id, map_id, time) values ($1, $2, $3)", [globalThis.id, mapID, stopwatchRef.current.getTime()])
+          personalBest = true
+        }
+        else
+        if(prevTime[0]["time"] > stopwatchRef.current.getTime())
+        {
+          //if the new time is faster, replace the old one
+          await db.runAsync("UPDATE scores SET time = $3 WHERE user_id = $1 AND map_id = $2", [globalThis.id, mapID, stopwatchRef.current.getTime()]);
+          personalBest = true
+        }
+
+        //in a second, navigate to the new screen
+        setTimeout(() => {
+          navigation.navigate("ScoreScreen", {time: stopwatchRef.current.getTime(), personalBest: personalBest})
+        }, 1000);
+    } catch (error) {
+        Alert.alert("There was an error adding your score to the database")
+        console.log("Error: " + error)
+    }
+}
+
+  async function setUpDB() {
+    try{
+        setDB(await SQLite.openDatabaseAsync('tilt.db'))
+    } catch (error) {
+        console.log("There was an issue accessing the database: " + error)
+    }
+  }
+
+
+return(
         <SafeAreaView style={{flexDirection:'column', width:'100%', height:'100%', justifyContent:'flex-start', alignItems:'center'}}>
 
           {/* top row */}

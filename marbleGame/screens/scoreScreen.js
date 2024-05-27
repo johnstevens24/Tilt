@@ -4,7 +4,7 @@ import * as SQLite from 'expo-sqlite';
 import style from '../styleSheets/scoreScreen'
 
 export default function ScoreScreen({route, navigation}) {
-    const {time} = route.params
+    const {time, personalBest} = route.params
     const [name, setName] = useState("")
     const [db, setDB] = useState(null)
     const [list, setList] = useState(null)
@@ -27,45 +27,32 @@ export default function ScoreScreen({route, navigation}) {
 
     async function setUpDB() {
         try{
-            setDB(await SQLite.openDatabaseAsync('scores.db'))
+            setDB(await SQLite.openDatabaseAsync('tilt.db'))
             if(db)
-                {
-                    await db.execAsync(`CREATE TABLE IF NOT EXISTS scores (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, score INT)`)
-                    await fetchList()
-                }
-                // setDB(db)
-                
-                
+            {
+                await fetchList()
+            }      
         } catch (error) {
-            console.log("Error: " + error)
+            console.log("There was an issue accessing the database: " + error)
         }
     }
 
     async function fetchList() {
         try{
-            const list = await db.getAllAsync(`SELECT * FROM scores ORDER BY score`)
+            const list = await db.getAllAsync(`SELECT scores.time, users.username FROM scores JOIN users ON scores.user_id = users.id ORDER BY scores.time`)
+            console.log(list)
             setList(list)
         } catch (error) {
             console.log("Error: " + error)
         }
     }
 
-    async function addScore() {
-        try{
-            setSubmitted(true)
-            await db.runAsync('INSERT INTO scores (name, score) VALUES (?, ?)', [name, time])
-            fetchList()
-        } catch (error) {
-            Alert.alert("There was an error adding your score to the database")
-            setSubmitted(false)
-            console.log("Error: " + error)
-        }
-    }
+    
     
 
     return(
         <View style ={{flexDirection:'column', alignItems:'center', justifyContent:'flex-start', height:'100%'}}>
-            <TouchableOpacity onPress={() => navigation.navigate("Game")} style={style.backButton}>
+            <TouchableOpacity onPress={() => navigation.navigate("SelectScreen")} style={style.backButton}>
                 <Text style={style.backButtonText}>BACK</Text>
             </TouchableOpacity>
             
@@ -74,22 +61,15 @@ export default function ScoreScreen({route, navigation}) {
                 <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
                     {list == null ? <Text>loading...</Text>: list.map((item, index) => (
                         <View key={index} style={{flexDirection: 'row', justifyContent:'space-between', alignItems:'center'}}>
-                            <Text style={{fontSize:20}}>{item.name}</Text>
-                            <Text style={{fontSize:20}}>{item.score}</Text>
+                            <Text style={{fontSize:20}}>{item.username}</Text>
+                            <Text style={{fontSize:20}}>{item.time}s</Text>
                         </View>
                         
                     ))}
                 </ScrollView>
             </View>
 
-            <Text style={{fontSize:20}}>You finished the level in {time} seconds</Text>
-            <TextInput onChangeText={text => setName(text)} defaultValue='your name' style={{backgroundColor:'#c9c9c9', padding:'3%'}}></TextInput>
-            
-            {!submitted ? 
-                <Button title='submit' onPress={() => {addScore()}}></Button>
-                :
-                <View/>
-            }
+            <Text style={{fontSize:20}}>You finished the level in {time} seconds {personalBest ? <Text>THATS A PERSONAL BEST!!</Text>: <Text>... eh</Text>}</Text>
             
             
         </View>
