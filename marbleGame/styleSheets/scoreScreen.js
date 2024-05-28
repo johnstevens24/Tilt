@@ -1,4 +1,8 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+
+const width = Dimensions.get('window').width
+const height = Dimensions.get('window').height
+
 
 export default StyleSheet.create({
     
@@ -34,5 +38,45 @@ export default StyleSheet.create({
         color:"black",
     },
 
+    LeaderBoardSubText: {
+        fontSize:16,
+        fontWeight:'400',
+        color:"black",
+    },
+
+    LeaderBoardRow: {
+        flexDirection:'row', 
+        width:'50%', 
+        alignItems:'flex-start', 
+        justifyContent:'flex-start'
+    },
+
+    backButton: {
+        position:'absolute',
+        top: 30,
+        left: width-80,
+        right: 10,
+        bottom: height-80,
+        backgroundColor: '#c9c9c9',
+        zIndex:1,
+        borderRadius:10,
+        borderColor:'black',
+        borderBottomWidth:3,
+        borderRightWidth:3,
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+
+    backButtonText: {
+        fontSize:20,
+        fontWeight:'500',
+        color:"black",
+    },
+
+    TimeFinishedText: {
+        fontSize: 20,
+        fontWeight:'500'
+    }
 
 });

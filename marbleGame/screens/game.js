@@ -121,7 +121,7 @@ export default function Game({navigation, route}) {
 
     try{
         //see if the user already has a time for this map
-        const prevTime = await db.getAllAsync('SELECT * FROM scores WHERE scores.user_id = $1', [globalThis.id]);
+        const prevTime = await db.getAllAsync('SELECT * FROM scores WHERE scores.user_id = $1 AND scores.map_id = $2', [globalThis.id, mapID]);
 
         if(prevTime.length === 0)
         {
@@ -139,7 +139,7 @@ export default function Game({navigation, route}) {
 
         //in a second, navigate to the new screen
         setTimeout(() => {
-          navigation.navigate("ScoreScreen", {time: stopwatchRef.current.getTime(), personalBest: personalBest})
+          navigation.navigate("ScoreScreen", {time: stopwatchRef.current.getTime(), personalBest: personalBest, mapID:mapID})
         }, 1000);
     } catch (error) {
         Alert.alert("There was an error adding your score to the database")
