@@ -66,11 +66,11 @@ export default function Game({navigation, route}) {
       //if it isn't
       if (!onPlatform) 
       {
-        // setPause(true)
-        // stopwatchRef.current.stop()
-        // setGameOver(true)
-        // setStarted(false)
-        // return
+        setPause(true)
+        stopwatchRef.current.stop()
+        setGameOver(true)
+        setStarted(false)
+        return
       }
 
       //check if the ball has made it to the end
@@ -185,17 +185,16 @@ return(
           {gameOver ? 
             <View style={Styles.GameOverBox}>
               {/* Game over message */}
-              <View>
+              <View style={Styles.GameOverMessage}>
                 <Text style={{fontSize:30, color:'white'}}>You Lost</Text>
               </View>
               {/* Game over buttons */}
-              <View style={{height:'40%', flexDirection:'row', justifyContent:'flex-start', alignItems:'center'}}>
-                <TouchableOpacity style={Styles.GameOverButton} onPress={() => {}}>
-                  <Text>Exit</Text>
+              <View style={{height:'50%', width:'100%', flexDirection:'row', justifyContent:'space-evenly', alignItems:'center'}}>
+                <TouchableOpacity style={Styles.GameOverButton} onPress={() => {navigation.goBack()}}>
+                  <Text style={Styles.GameOverButtonText}>Exit</Text>
                 </TouchableOpacity>
-                
                 <TouchableOpacity style={Styles.GameOverButton} onPress={() => {tryAgain()}}>
-                  <Text>Try Again</Text>
+                  <Text style={Styles.GameOverButtonText}>Try Again</Text>
                 </TouchableOpacity>
               </View>
 

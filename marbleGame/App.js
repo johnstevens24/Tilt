@@ -16,7 +16,7 @@ StatusBar.setBarStyle('dark-content');
 function App() {
   return (
     <NavigationContainer independent={true}>
-      <Stack.Navigator initialRouteName="LoginScreen" screenOptions={{ headerShown: false, gestureEnabled: false  }}>
+      <Stack.Navigator initialRouteName="LoginScreen" screenOptions={{ headerShown: false, gestureEnabled: false, orientation: 'portrait' }}>
         <Stack.Screen name="Game" component={Game} />
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="ScoreScreen" component={ScoreScreen} />
